@@ -1,0 +1,35 @@
+#lang sicp
+
+(define (project-one-level datum)
+  (let ((type (car datum)) (contents (cdr datum))))
+    (cond ((eq? type 'integer) datum)
+          ((eq? type 'real) (make-integer (round contents)))
+          ((eq? type 'complex) (make-real (real-part contents) 0 1))
+          (else (error "No method for these types -- PROJECT-ONE-LEVEL" type))))
+
+(define (drop object)
+  (define (drop-one-level datum)
+    (let ((type (car datum)))
+      (if (eq? type 'integer) datum
+          (let ((projected (project-one-level datum)))
+            (let ((raise-projected (raise-one-level projected)))
+              (let ((equ?-proc (get 'equ? type (car raise-projected))))
+                (if (equ?-proc datum raise-projected)
+                    (drop-one-level projected)
+                    datum)))))))
+  (drop-one-level object))
+
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (drop (apply proc (map contents args)))
+          (if (= (length args) 2)
+              (let ((type1 (car type-tags))
+                    (type2 (cadr type-tags))
+                    (a1 (car args))
+                    (a2 (cadr args)))
+                (if (higher-type? type1 type2)
+                    (apply-generic op a1 (raise-one-level a2))
+                    (apply-generic op (raise-one-level a1) a2)))
+              (error "No method for these types" (list op type-tags)))))))

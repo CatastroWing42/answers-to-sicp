@@ -1,6 +1,4 @@
 #lang sicp
 
-(define num_a 222)
-(put 'a 2 num_a)
-
-(display (get 'a 2))
+(define (num_a) (lambda () 2))
+(put 'a 'b num_a)

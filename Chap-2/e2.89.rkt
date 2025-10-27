@@ -1,0 +1,18 @@
+#lang sicp
+
+(define (adjoin-term term term-list)
+  (cond ((=zero? (coeff term)) term-list)
+        ((= (order term) (order (first-term term-list)))
+          term-list)
+        (else (cons (coeff term)
+                    (adjoin-term (rest-terms term) term-list)))))
+(define (the-empty-termlist) '())
+(define (first-term term-list) term-list)
+(define (rest-terms term-list) (cdr term-list))
+(define (empty-termlist? term-list) (null? term-list))
+(define (make-term order coeff)
+  (if (= order 0)
+      (list coeff)
+      (cons coeff (make-term (- order 1) 0))))
+(define (order term) (- (length term) 1))
+(define (coeff term) (car term))
