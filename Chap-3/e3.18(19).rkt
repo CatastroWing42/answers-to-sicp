@@ -1,0 +1,32 @@
+#lang sicp
+
+(define (detect-cycle x)
+    (define (color node)
+        (set-car! node (cons 'detect-color (car node))))
+    (define (uncolor node)
+        (set-car! node (cdar node)))
+    (define (is-colored? node)
+        (cond ((not (pair? (car node))) false)
+            ((eq? (caar node) 'detect-color) true)
+            (else false)))
+    (define (revert y)
+        (cond ((null? y) 0)
+            ((not (pair? y)) 0)
+            ((not (is-colored? y)) 0)
+            (else (begin
+                    (uncolor y)
+                    (revert (cdr y))))))
+    (define (detect y)
+        (cond ((null? y) false)
+            ((not (pair? y)) false)
+            ((is-colored? y)
+                (begin (revert x) true))
+            (else (begin (color y)
+                    (detect (cdr y))))))
+    (detect x))
+
+(define cn (cons 'e 'f))
+(set-cdr! cn cn)
+(define xn (cons 'a (cons 'b cn)))
+
+(detect-cycle xn)
