@@ -1,0 +1,36 @@
+#lang sicp
+
+; suppose we have three things A/B/C each with its own mutex
+(define (make-A)
+    (define local 0)
+    (define (f n B C)
+        (set! local (+ local n))
+        (if (> n 1)
+            (B 'g)
+            (C 'g)))
+    (define (g)
+        (set! local (- local 1)))
+    (define s (make-serializer))
+    (define (dispatch m)
+        (cond
+            ((eq? m 'f) f)
+            ((eq? m 'g) g)
+            ((eq? m 's) s)))
+    dispatch)
+
+(define (make-B)
+    (define local 0)
+    (define (f n A C)
+        (set! local (+ local n))
+        (if (> n 2)
+            (A 'g)
+            (C 'g)))
+    (define (g)
+        (set! local (- local 1)))
+    (define s (make-serializer))
+    (define (dispatch m)
+        (cond
+            ((eq? m 'f) f)
+            ((eq? m 'g) g)
+            ((eq? m 's) s)))
+    dispatch)

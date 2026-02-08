@@ -15,7 +15,14 @@
 ; (number? 's)
 ; (< 2 'b)
 
-(define ll (list 'a 'b 'c))
-(memq 'c ll)
+; (define ll (list 'a 'b 'c))
+; (memq 'c ll)
+; 
+; (sqrt 2)
+; (define (show a b)
+;     (display a) (newline) (display b))
+; (define x
+;     (apply show (list 2 4)))
 
-(sqrt 2)
+(quotient 10 7)
+(remainder 10 7)
